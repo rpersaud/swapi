@@ -2,7 +2,7 @@ import React, {useState, useEffect, MouseEvent } from 'react';
 import axios from 'axios'
 import './App.css';
 
-const baseUrl = 'https://swapi.dev/api/people';
+const baseUrl = 'https://swapi.dev/api/peoples';
 
 interface SWAPIToon {
   name?: string;
@@ -21,8 +21,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await  axios.get(baseUrl);
-      setData(result.data);
+      try {
+        const result = await  axios.get(baseUrl);
+        setData(result.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
     fetchData();
   }, []); // run once
@@ -79,7 +83,7 @@ const App: React.FC = () => {
                 </ul>
               </Collapse>
             </li>
-          ))}
+          )) || <li>It's those womp rats again! They chewed up all the data!</li>}
         </ul>
       </section>
     </div>
