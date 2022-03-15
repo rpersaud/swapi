@@ -60,10 +60,24 @@ button {
   font-size: 50px;
 }
 
+
 button:hover {
   text-decoration: underline;
 }
-
 .selected {
   color: #bb1122;
+}
+.selected:visited {
+  color: yellow;
+}
+
+collapse-button {
+  display: block;
+  width: 100%;
+}
+.collapse-content.collapsed {
+  display: none;
+}
+.collapsed-content.expanded {
+  display: block;
 }

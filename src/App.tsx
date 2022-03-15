@@ -4,18 +4,21 @@ import './App.css';
 
 const baseUrl = 'https://swapi.dev/api/people';
 
+interface SWAPIToon {
+  name?: string;
+}
+
+interface SWAPIData {
+  count?: number;
+  next?: string;
+  previous?: string;
+  results?: any[];
+}
+
 const App: React.FC = () => {
 
-  const [data, setData] = useState([] as any);
-  const [selectedToon, setSelectedToon] = useState({});
-  
-  useEffect(() => {
-    if (selectedToon) {
-      console.log('toon clicked', selectedToon);
-    }
-    // dispatch api call
-  }, [selectedToon]);
-  
+  const [data, setData] = useState([] as SWAPIData);
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await  axios.get(baseUrl);
@@ -24,9 +27,38 @@ const App: React.FC = () => {
     fetchData();
   }, []); // run once
 
-  const handleClick = (event: MouseEvent) => {
-    setSelectedToon((event?.target as HTMLButtonElement).innerHTML);
-  }
+  const Collapse = ({ item, collapsed, children }: any) => {
+    const [isCollapsed, setIsCollapsed] = React.useState(collapsed);
+    const [selectedToon, setSelectedToon] = useState({});
+    useEffect(() => {
+      if (selectedToon) {
+        console.log('toon clicked', selectedToon);
+      }
+      // dispatch api call
+    }, [selectedToon]);
+
+    const handleClick = (event: MouseEvent) => {
+      setIsCollapsed(!isCollapsed);
+      setSelectedToon((event?.target as HTMLButtonElement).innerHTML);
+    }
+
+    return (
+      <>
+        <button
+          className={`collapse-button ${ !isCollapsed ? 'selected' : ''}`}
+          onClick={handleClick}
+        >
+          {item.name}
+        </button>
+        <div
+          className={`collapse-content ${isCollapsed ? 'collapsed' : 'expanded'}`}
+          aria-expanded={isCollapsed}
+        >
+          {children}
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="app">
@@ -38,9 +70,13 @@ const App: React.FC = () => {
       </nav>
       <section>
         <ul>
-          {data?.results?.map((item: { name: string }) => ( // TODO: type interface
+          {data?.results?.map((item: SWAPIToon) => (
             <li key={item.name}>
-              <button className={selectedToon === item.name ? 'selected' : ''} onClick={handleClick}>{item.name}</button>
+              <Collapse item={item} collapsed={true}>
+                <ul>
+                  <li>Empire Strieks Back, 1977</li>
+                </ul>
+              </Collapse>
             </li>
           ))}
         </ul>
