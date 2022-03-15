@@ -59,6 +59,11 @@ button {
   cursor: pointer;
   font-size: 50px;
 }
+
 button:hover {
   text-decoration: underline;
+}
+
+.selected {
+  color: #bb1122;
 }

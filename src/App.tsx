@@ -40,7 +40,7 @@ const App: React.FC = () => {
         <ul>
           {data?.results?.map((item: { name: string }) => ( // TODO: type interface
             <li key={item.name}>
-              <button onClick={handleClick}>{item.name}</button>
+              <button className={selectedToon === item.name ? 'selected' : ''} onClick={handleClick}>{item.name}</button>
             </li>
           ))}
         </ul>
