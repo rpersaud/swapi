@@ -64,8 +64,9 @@ const App: React.FC = () => {
     <div className="app">
       <nav>
         <ul className="nav-menu">
-          <li><a href="https://swapi.dev/" target="_blank" rel="noreferrer">SW-Api</a></li>
           <li><a href="#ws" rel="noopener noreferrer">whiteSpace</a></li>
+          <li>Found {data?.count || 0} Toons </li>
+          <li><a href="https://swapi.dev/" target="_blank" rel="noreferrer">SW-Api</a></li>
         </ul>
       </nav>
       <section>

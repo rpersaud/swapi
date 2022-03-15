@@ -20,7 +20,7 @@ body nav {
 ul.nav-menu {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly;
   box-sizing: border-box;
   padding: 20px;
   background: #fff;
@@ -46,6 +46,9 @@ section {
   font-size: 3rem;
   font-weight: bold;
   background: #eee;
+  @media only screen and (max-width: 767px) {
+    font-size: 1rem;
+  }
 }
 
 button {
@@ -60,6 +63,11 @@ button {
   font-size: 50px;
 }
 
+@media only screen and (max-width: 767px) {
+  button, section, .collapse-content li, ul.nav-menu li {
+    font-size: 1rem;
+  }
+}
 
 button:hover {
   text-decoration: underline;
