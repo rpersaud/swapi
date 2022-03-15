@@ -2,17 +2,26 @@ import React, {useState, useEffect, MouseEvent } from 'react';
 import axios from 'axios'
 import './App.css';
 
-const baseUrl = 'https://swapi.dev/api/peoples';
+const baseUrl = 'https://swapi.dev/api/people';
 
 interface SWAPIToon {
   name?: string;
+  films?: SWAPIFilm[];
+}
+
+interface SWAPIFilm {
+  data?: {
+    title?: string;
+    episode_id?: number,
+    release_date?: Date;
+  }
 }
 
 interface SWAPIData {
   count?: number;
   next?: string;
   previous?: string;
-  results?: any[];
+  results?: SWAPIToon[];
 }
 
 const App: React.FC = () => {
@@ -22,7 +31,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await  axios.get(baseUrl);
+        const result = await axios.get(baseUrl);
         setData(result.data);
       } catch (error) {
         console.log(error);
@@ -64,6 +73,41 @@ const App: React.FC = () => {
     );
   };
 
+  const Films = ({list}: any) => {
+    const [filmList, setFilmList] = useState([] as any);
+    useEffect(() => {
+      const getFilmData = (url: string) => axios.get(url);
+      const fetchFilmList = async() => {
+        try {
+          const result: any = await Promise.all(list.map((filmUrl: any) => getFilmData(filmUrl)));
+          return result;
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchFilmList().then((response) => {
+        setFilmList(response);
+      });
+    }, []);
+
+    return (
+      <>
+        <ul className="film-list">
+          {filmList?.map((film: SWAPIFilm) => (
+            <li key={film.data?.episode_id}>
+              <span>ep {film.data?.episode_id}</span>
+              <span><em>{film.data?.title}</em></span>
+              <span>{film.data?.release_date}</span>
+            </li>
+          ))}
+          {/* {list.map((film: string[]) => (
+            <li>{film}</li>
+          ))} */}
+        </ul>
+      </>
+    );
+  };
+
   return (
     <div className="app">
       <nav>
@@ -78,9 +122,7 @@ const App: React.FC = () => {
           {data?.results?.map((item: SWAPIToon) => (
             <li key={item.name}>
               <Collapse item={item} collapsed={true}>
-                <ul>
-                  <li>Empire Strieks Back, 1977</li>
-                </ul>
+                <Films list={item?.films} />
               </Collapse>
             </li>
           )) || <li>It's those womp rats again! They chewed up all the data!</li>}
