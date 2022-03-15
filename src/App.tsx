@@ -1,23 +1,23 @@
 import React, {useState, useEffect, MouseEvent } from 'react';
 import axios from 'axios'
 import './App.css';
+import Collapse from './components/Collapse';
+import Films from './components/Films';
 
 const baseUrl = 'https://swapi.dev/api/people';
 
-interface SWAPIToon {
+export interface SWAPIToon {
   name?: string;
   films?: SWAPIFilm[];
 }
-
-interface SWAPIFilm {
+export interface SWAPIFilm {
   data?: {
     title?: string;
     episode_id?: number,
     release_date?: Date;
   }
 }
-
-interface SWAPIData {
+export interface SWAPIData {
   count?: number;
   next?: string;
   previous?: string;
@@ -27,103 +27,37 @@ interface SWAPIData {
 const App: React.FC = () => {
 
   const [data, setData] = useState([] as SWAPIData);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await axios.get(baseUrl);
-        setData(result.data);
-      } catch (error) {
-        console.log(error);
-      }
+  const fetchData = async(url: string) => {
+    try {
+      return await axios.get(url);
+    } catch (error) {
+      console.log(error);
     }
-    fetchData();
+  }
+
+  // Initially load page with data
+  useEffect(() => {
+    fetchData(baseUrl).then((res) => {
+      if (res?.data) {
+        setData(res.data);
+        setLoading(false);
+      }
+    });
   }, []); // run once
 
   const handlePrevious = async () => {
-    try {
-      const result = await axios.get(data?.previous || '');
-      setData(result.data);
-    } catch (error) {
-      console.log(error);
-    }
+    fetchData(data?.previous || '').then((res) => {
+      setData(res?.data);
+    });
   }
 
   const handleNext = async () => {
-    try {
-      const result = await axios.get(data?.next || '');
-      setData(result.data);
-    } catch (error) {
-      console.log(error);
-    }
+    fetchData(data?.next || '').then((res) => {
+      setData(res?.data);
+    });
   }
-
-  const Collapse = ({ item, collapsed, children }: any) => {
-    const [isCollapsed, setIsCollapsed] = React.useState(collapsed);
-    const [selectedCharacter, setSelectedCharacter] = useState({});
-    useEffect(() => {
-      if (selectedCharacter) {
-        console.log('toon clicked', selectedCharacter);
-      }
-    }, [selectedCharacter]);
-
-    const handleClick = (event: MouseEvent) => {
-      setIsCollapsed(!isCollapsed);
-      setSelectedCharacter((event?.target as HTMLButtonElement).innerHTML);
-    }
-
-    return (
-      <>
-        <button
-          className={`collapse-button ${ !isCollapsed ? 'selected' : ''}`}
-          onClick={handleClick}
-        >
-          {item.name}
-        </button>
-        <div
-          className={`collapse-content ${isCollapsed ? 'collapsed' : 'expanded'}`}
-          aria-expanded={isCollapsed}
-        >
-          {children}
-        </div>
-      </>
-    );
-  };
-
-  const Films = ({list}: any) => {
-    const [filmList, setFilmList] = useState([] as any);
-    useEffect(() => {
-      const getFilmData = (url: string) => axios.get(url);
-      const fetchFilmList = async() => {
-        try {
-          const result: any = await Promise.all(list.map((filmUrl: any) => getFilmData(filmUrl)));
-          return result;
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchFilmList().then((response) => {
-        setFilmList(response);
-      });
-    }, []);
-
-    const getDate = (date: Date) => {
-      return new Intl.DateTimeFormat('en-GB', { dateStyle: 'full'}).format(new Date(date));
-    }
-    return (
-      <>
-        <ul className="film-list">
-          {filmList?.map((film: SWAPIFilm) => (
-            <li key={film.data?.episode_id}>
-              <span>ep {film.data?.episode_id}</span>
-              <span><em>{film.data?.title}</em></span>
-              <span>{getDate(film.data?.release_date as any)}</span>
-            </li>
-          ))}
-          </ul>
-      </>
-    );
-  };
 
   return (
     <div className="app">
@@ -135,6 +69,8 @@ const App: React.FC = () => {
         </ul>
       </nav>
       <section>
+        { loading ? 
+          <div>...loading</div> :
         <ul>
           {data?.results?.map((item: SWAPIToon) => (
             <li key={item.name}>
@@ -144,6 +80,7 @@ const App: React.FC = () => {
             </li>
           )) || <li>It's those womp rats again! They chewed up all the data!</li>}
         </ul>
+      }
       </section>
       <footer>
         <ul className='nav-menu'>
