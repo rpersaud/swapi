@@ -49,6 +49,12 @@ Runs the e2e test in playwright visually (headed) in a browser locally.
 Following the instructions above, you would have to do a bit of setup - 
 `npx playwright install` to install browsers locally to test against.
 
+## Roadmap - todo
+
+- navigation items in footer wai-aria + provide feedback when clicking
+- fix playwright e2e testing, or consider moving towards testcafe or cypress
+- deploy to free service like vercel or github pages to verify web performance + automation testing
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
