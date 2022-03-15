@@ -42,17 +42,16 @@ const App: React.FC = () => {
 
   const Collapse = ({ item, collapsed, children }: any) => {
     const [isCollapsed, setIsCollapsed] = React.useState(collapsed);
-    const [selectedToon, setSelectedToon] = useState({});
+    const [selectedCharacter, setSelectedCharacter] = useState({});
     useEffect(() => {
-      if (selectedToon) {
-        console.log('toon clicked', selectedToon);
+      if (selectedCharacter) {
+        console.log('toon clicked', selectedCharacter);
       }
-      // dispatch api call
-    }, [selectedToon]);
+    }, [selectedCharacter]);
 
     const handleClick = (event: MouseEvent) => {
       setIsCollapsed(!isCollapsed);
-      setSelectedToon((event?.target as HTMLButtonElement).innerHTML);
+      setSelectedCharacter((event?.target as HTMLButtonElement).innerHTML);
     }
 
     return (
@@ -90,6 +89,9 @@ const App: React.FC = () => {
       });
     }, []);
 
+    const getDate = (date: Date) => {
+      return new Intl.DateTimeFormat('en-GB', { dateStyle: 'full'}).format(new Date(date));
+    }
     return (
       <>
         <ul className="film-list">
@@ -97,13 +99,10 @@ const App: React.FC = () => {
             <li key={film.data?.episode_id}>
               <span>ep {film.data?.episode_id}</span>
               <span><em>{film.data?.title}</em></span>
-              <span>{film.data?.release_date}</span>
+              <span>{getDate(film.data?.release_date as any)}</span>
             </li>
           ))}
-          {/* {list.map((film: string[]) => (
-            <li>{film}</li>
-          ))} */}
-        </ul>
+          </ul>
       </>
     );
   };
@@ -113,7 +112,7 @@ const App: React.FC = () => {
       <nav>
         <ul className="nav-menu">
           <li><a href="#ws" rel="noopener noreferrer">whiteSpace</a></li>
-          <li>Found {data?.count || 0} Toons </li>
+          <li>Found {data?.count || 0} Characters </li>
           <li><a href="https://swapi.dev/" target="_blank" rel="noreferrer">SW-Api</a></li>
         </ul>
       </nav>
