@@ -40,6 +40,24 @@ const App: React.FC = () => {
     fetchData();
   }, []); // run once
 
+  const handlePrevious = async () => {
+    try {
+      const result = await axios.get(data?.previous || '');
+      setData(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleNext = async () => {
+    try {
+      const result = await axios.get(data?.next || '');
+      setData(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const Collapse = ({ item, collapsed, children }: any) => {
     const [isCollapsed, setIsCollapsed] = React.useState(collapsed);
     const [selectedCharacter, setSelectedCharacter] = useState({});
@@ -127,6 +145,12 @@ const App: React.FC = () => {
           )) || <li>It's those womp rats again! They chewed up all the data!</li>}
         </ul>
       </section>
+      <footer>
+        <ul className='nav-menu'>
+          <li>{!!data?.previous && <span onClick={handlePrevious}>previous</span>}</li>
+          <li>{!!data?.next && <span onClick={handleNext}>next</span>}</li>
+        </ul>
+      </footer>
     </div>
   );
 }

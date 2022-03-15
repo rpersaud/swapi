@@ -17,6 +17,11 @@ body nav {
   top: 0;
 }
 
+body footer {
+  position: sticky;
+  bottom: 0;
+}
+
 ul.nav-menu {
   width: 100%;
   display: flex;
