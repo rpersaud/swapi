@@ -39,6 +39,6 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByText('...loading')).toBeInTheDocument();
     expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(await screen.findByText('Mocks Vader')).toBeInTheDocument();
+    expect(await screen.findByText('Mock Vader')).toBeInTheDocument();
   });
 });
