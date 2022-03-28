@@ -2,21 +2,23 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { SWAPIFilm } from '../App';
 
-const Films = ({list}: any) => {
+const Films: React.FC<{films: string[]}> = ({films}) => {
 
-    const [filmList, setFilmList] = useState([] as any);
+    const [filmList, setFilmList] = useState<SWAPIFilm[]>([]);
 
     useEffect(() => {
-      const getFilmData = (url: string) => axios.get(url);
       const fetchFilmList = async() => {
-        try {
-          const result: any = await Promise.all(list.map((filmUrl: any) => getFilmData(filmUrl)));
-          return result;
+        try {    
+          if (!films) return;
+          const result = await Promise.all(films.map((film) => axios.get<SWAPIFilm>(film)));
+          console.log(result);
+          return result as SWAPIFilm[];
         } catch (error) {
           console.log(error);
         }
       };
       fetchFilmList().then((response) => {
+        if (!response) return;
         setFilmList(response);
       });
     }, []);

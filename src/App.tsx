@@ -8,7 +8,7 @@ const baseUrl = 'https://swapi.dev/api/people';
 
 export interface SWAPIToon {
   name?: string;
-  films?: SWAPIFilm[];
+  films?: string[];
 }
 export interface SWAPIFilm {
   data?: {
@@ -26,16 +26,21 @@ export interface SWAPIData {
 
 const App: React.FC = () => {
 
-  const [data, setData] = useState([] as SWAPIData);
+  const [data, setData] = useState<SWAPIData>({});
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const fetchData = async(url: string) => {
     try {
       return await axios.get(url);
     } catch (error) {
-      console.log(error);
+      console.log('App FetchData error', error);
+      const err = (error as Error).message;
+      setErrorMsg(err);
+      setLoading(false);
     }
   }
+
 
   // Initially load page with data
   useEffect(() => {
@@ -69,16 +74,17 @@ const App: React.FC = () => {
         </ul>
       </nav>
       <section>
+        { errorMsg && <div>{errorMsg}</div> }
         { loading ? 
           <div>...loading</div> :
         <ul>
           {data?.results?.map((item: SWAPIToon) => (
             <li key={item.name}>
               <Collapse item={item} collapsed={true}>
-                <Films list={item?.films} />
+                {item?.films && <Films films={item?.films} />}
               </Collapse>
             </li>
-          )) || <li>It's those womp rats again! They chewed up all the data!</li>}
+          ))}
         </ul>
       }
       </section>
